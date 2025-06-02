@@ -6,24 +6,24 @@ from pvlib.pvsystem import Array
 from src.view_profile import ViewProfile
 
 
-class FacadeArray(Array):
+class SurfaceArray(Array):
     """
-    Extension of pvlib.pvsystem.Array to allow custom facade shading logic
+    Extension of pvlib.pvsystem.Array to allow custom surface shading logic
     via a ViewProfile.
     """
 
-    facade_profile: Optional[ViewProfile]
+    surface_profile: Optional[ViewProfile]
 
-    def __init__(self, *args, facade_profile: Optional[ViewProfile] = None, **kwargs):
+    def __init__(self, *args, surface_profile: Optional[ViewProfile] = None, **kwargs):
         """
         Parameters
         ----------
-        facade_profile : ViewProfile, optional
+        surface_profile : ViewProfile, optional
             Profile describing the obstruction of sunlight due to surrounding
             structures or horizons.
         """
         super().__init__(*args, **kwargs)
-        self.facade_profile = facade_profile
+        self.surface_profile = surface_profile
 
     def get_irradiance(
         self,
@@ -35,16 +35,16 @@ class FacadeArray(Array):
         **kwargs
     ) -> pd.DataFrame:
         """
-        Apply facade shading logic before computing total irradiance.
+        Apply surface shading logic before computing total irradiance.
 
         Returns
         -------
         pd.DataFrame
-            Irradiance on the tilted surface with facade-based shading applied.
+            Irradiance on the tilted surface with surface-based shading applied.
         """
-        # Apply the custom facade profile to mask irradiance inputs
-        if self.facade_profile is not None:
-            _, dni, ghi, dhi = self.facade_profile.apply(
+        # Apply the custom surface profile to mask irradiance inputs
+        if self.surface_profile is not None:
+            _, dni, ghi, dhi = self.surface_profile.apply(
                 solar_zenith, solar_azimuth, dni, ghi, dhi
             )
 

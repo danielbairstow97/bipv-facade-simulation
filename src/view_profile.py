@@ -25,6 +25,9 @@ class ViewProfile:
         self.azimuth = AZIMUTH_360
         self.elevation = np.interp(AZIMUTH_360, azimuth, elevation)
 
+    def mirror(self) -> "ViewProfile":
+        return ViewProfile(AZIMUTH_360, np.flip(self.elevation))
+
     def rotate(self, degrees: float) -> "ViewProfile":
         """
         Rotate the azimuth profile by a given number of degrees clockwise.
@@ -185,3 +188,19 @@ PANORAMIC = ViewProfile([0, 360], [0, 0])  # Full sky view
 BACKED = ViewProfile(
     [0, 90, 91, 270, 271, 360], [0, 0, 90, 90, 0, 0]
 )  # Unobstructed view infront, wall behind with obstructed view
+NW_BALCONY = ViewProfile(
+    [0, 12.36, 12.361, 90, 90.1, 270, 270.1], [0, 0, 49.5, 79.639, 90, 90, 0]
+)  # NW corner balcony facing north with the north east facing into a facade of the building
+NE_BALCONY = NW_BALCONY.mirror()
+
+
+def profile_from_str(str):
+    match str:
+        case 'BACKED':
+            return BACKED
+        case 'PANORAMIC':
+            return PANORAMIC
+        case 'NE_BALCONY':
+            return NE_BALCONY
+        case 'NW_BALCONY':
+            return NW_BALCONY
